@@ -51,6 +51,23 @@ export default function DashboardHome() {
     return 'text-green-500';
   };
 
+  const tomorrowTasksCount = tasks.filter(t => {
+    if (!t.due_date) return false;
+    const d = new Date(t.due_date + 'T00:00:00');
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return d.getDate() === tomorrow.getDate() && d.getMonth() === tomorrow.getMonth() && d.getFullYear() === tomorrow.getFullYear();
+  }).length;
+  
+  const thisWeekTasksCount = tasks.filter(t => {
+    if (!t.due_date) return false;
+    const d = new Date(t.due_date + 'T00:00:00');
+    const today = new Date();
+    const endOfWeek = new Date(today);
+    endOfWeek.setDate(today.getDate() + (7 - today.getDay()));
+    return d >= today && d <= endOfWeek;
+  }).length;
+
   return (
     <div className="p-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto">
       
@@ -183,7 +200,7 @@ export default function DashboardHome() {
                   </div>
                   <div>
                     <span className="font-medium text-white block">Tomorrow</span>
-                    <span className="text-xs text-muted-foreground">4 tasks</span>
+                    <span className="text-xs text-muted-foreground">{tomorrowTasksCount} tasks</span>
                   </div>
                 </div>
                 <ChevronRight className="text-muted-foreground group-hover:text-white transition-colors" />
@@ -196,7 +213,7 @@ export default function DashboardHome() {
                   </div>
                   <div>
                     <span className="font-medium text-white block">This Week</span>
-                    <span className="text-xs text-muted-foreground">12 tasks</span>
+                    <span className="text-xs text-muted-foreground">{thisWeekTasksCount} tasks</span>
                   </div>
                 </div>
                 <ChevronRight className="text-muted-foreground group-hover:text-white transition-colors" />
