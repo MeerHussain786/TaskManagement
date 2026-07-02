@@ -3,10 +3,12 @@ services:
     name: task-manager-backend
     env: python
     plan: free
-    rootDir: backend
+    rootDir: task_manager/backend
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
       - key: DATABASE_URL
         value: sqlite+aiosqlite:///task_manager.db
       - key: SECRET_KEY
