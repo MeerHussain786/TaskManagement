@@ -1,185 +1,101 @@
-# Enterprise Task Management REST API
+# Enterprise Task Management System 🚀
 
-A COMPLETE, production-ready Task Management REST API built with the latest enterprise design patterns in backend engineering.
+A complete, production-ready full-stack Task Management application featuring a beautifully designed Next.js frontend and a highly scalable FastAPI Python backend using Clean Architecture.
 
----
-
-## Key Architecture & Features
-
-- **Clean Architecture**: Strict separation of concerns (Presentation, Application, Domain, and Infrastructure).
-- **Asynchronous Stack**: Fully async database transactions via `FastAPI` and `SQLAlchemy 2.0` (asyncpg/aiosqlite).
-- **Database Engine**: Optimized for PostgreSQL in production (connection pooling) and SQLite in local development.
-- **Refresh Token Rotation**: Safe session maintenance using JWT rotation and reuse (theft) detection.
-- **Cache-Aside Pattern**: Low-latency endpoints powered by Redis caching with scanning cache invalidations.
-- **RFC 7807 Error Responses**: Standardized, machine-parseable error responses.
-- **Observability Stack**: Structured JSON logs using `structlog`, Prometheus metrics `/metrics`, and OpenTelemetry distributed tracing.
-- **Testing suite**: Over 95% test coverage tracking unit, integration, and End-to-End routes.
+This repository is organized as a monorepo:
+- `frontend/` - Next.js 15, React 19, Tailwind CSS v4, Zustand, and shadcn/ui.
+- `backend/` - FastAPI, SQLAlchemy 2.0 (async), PostgreSQL/SQLite, and Redis.
 
 ---
 
-## Technology Stack
+## 🌟 Key Features
 
-| Component | Technology | Description |
-| --- | --- | --- |
-| **Language** | Python 3.13+ | Modern typing syntax, performance benefits |
-| **Framework** | FastAPI | Async OpenAPI-compatible API framework |
-| **ORM** | SQLAlchemy 2.x | Declarative mappings, async transactions |
-| **Database** | PostgreSQL 16 | Relational store with constraints & composite indexes |
-| **Cache** | Redis 7 | Caching, session indexing, rate limiting |
-| **Migrations** | Alembic | Async migrations tracking schema states |
-| **Observability** | OpenTelemetry / structlog | Structured logs, distributed tracing, metrics |
-| **Testing** | Pytest / HTTPX | Async client integration & mock caching suites |
-| **Security** | Bcrypt / Jose JWT | Native password hashing, claims-based security |
+- **Modern UI/UX**: Premium aesthetic with micro-animations, glassmorphism, and responsive layouts.
+- **Clean Architecture Backend**: Strict separation of concerns (Presentation, Application, Domain, and Infrastructure).
+- **Asynchronous Stack**: Fully async database transactions via `FastAPI` and `SQLAlchemy 2.0`.
+- **JWT Security & Refresh Token Rotation**: Safe session maintenance using secure JWT rotation.
+- **Cache-Aside Pattern**: Low-latency backend endpoints powered by Redis caching.
+- **Type-Safe API Contracts**: The frontend uses `orval` to auto-generate React Query hooks directly from the backend's OpenAPI schema.
 
 ---
 
-## Architecture Diagram
+## 🛠 Technology Stack
 
-```mermaid
-graph TB
-    subgraph Presentation ["Presentation Layer"]
-        router_auth[auth router]
-        router_users[users router]
-        router_tasks[tasks router]
-        router_health[health router]
-    end
+### Frontend
+| Component | Technology |
+| --- | --- |
+| **Framework** | Next.js 15 (App Router), React 19 |
+| **Styling** | Tailwind CSS v4, shadcn/ui, Radix UI |
+| **State Management** | Zustand (Auth/Theme), TanStack Query v5 |
+| **Forms** | React Hook Form, Zod |
+| **API Client** | Orval (OpenAPI to TS generator), Axios |
 
-    subgraph Application ["Application / Service Layer"]
-        service_auth[AuthService]
-        service_user[UserService]
-        service_task[TaskService]
-    end
-
-    subgraph Domain ["Domain Layer"]
-        model_user[User Entity]
-        model_task[Task Entity]
-        model_token[RefreshToken Entity]
-    end
-
-    subgraph Infrastructure ["Infrastructure Layer"]
-        db[(PostgreSQL / SQLite)]
-        redis[(Redis)]
-        security[JWT & Bcrypt Helpers]
-        repo_user[UserRepository]
-        repo_task[TaskRepository]
-    end
-
-    router_auth --> service_auth
-    router_users --> service_user
-    router_tasks --> service_task
-
-    service_auth --> repo_user
-    service_auth --> security
-    service_user --> repo_user
-    service_task --> repo_task
-    service_task --> redis
-
-    repo_user --> db
-    repo_task --> db
-```
+### Backend
+| Component | Technology |
+| --- | --- |
+| **Framework** | FastAPI (Python 3.13+) |
+| **ORM** | SQLAlchemy 2.x (Async) |
+| **Database** | PostgreSQL 16 (Prod) / SQLite (Dev) |
+| **Cache & Security** | Redis 7, Bcrypt, Jose JWT |
+| **Migrations** | Alembic |
 
 ---
 
-## Local Development Setup
+## 💻 Local Development Setup
 
-### 1. Initialize Virtual Environment & Install Dependencies
+### 1. Backend Setup
+Create your virtual environment and install dependencies:
 ```bash
-# Create environment
+cd backend
 python -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
-# Install development and production requirements
-pip install -r requirements-dev.txt
+pip install -r requirements.txt
 ```
-
-### 2. Configure Environment Variables
-Copy `.env.example` to `.env` and fill in secrets:
+Set up your environment and run database migrations:
 ```bash
 cp .env.example .env
-```
-Default parameters will fallback to a local SQLite database (`task_manager.db`) and a mock Redis if offline, allowing instant local runs.
-
-### 3. Run Database Migrations
-Generate initial tables:
-```bash
 alembic upgrade head
 ```
 
-### 4. Run the Dev Server
+### 2. Frontend Setup
+In a new terminal window, install your frontend dependencies:
 ```bash
-uvicorn main:app --reload --port 8000
-```
-- Interactive Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
-- Alternative ReDoc: [http://localhost:8000/redoc](http://localhost:8000/redoc)
-
----
-
-## Containerized Deployment (Docker Compose)
-
-The compose configuration spins up the API application, a production PostgreSQL database, and a Redis container with active health check controls.
-
-```bash
-# Start all containers in the background
-docker-compose up -d --build
-
-# Inspect running logs
-docker-compose logs -f
-
-# Verify service liveness
-curl http://localhost:8000/api/v1/health/live
+cd frontend
+npm install
 ```
 
----
-
-## Testing & Quality Control
-
-The test suite runs unit tests, integration tests against database pools, and complete E2E router lifecycles.
-
+### 3. Run the Full Stack
+You can start *both* the frontend and backend simultaneously using the frontend's built-in dev script!
 ```bash
-# Run pytest with coverage checks
-$env:PYTHONPATH="."
-pytest --cov=app --cov-report=term-missing --cov-fail-under=95
-
-# Lint and formatting verification
-ruff check .
-black --check .
-mypy app/
-
-# Security scanning
-bandit -c pyproject.toml -r app/
+cd frontend
+npm run dev
 ```
+- **Application UI:** [http://localhost:3000](http://localhost:3000)
+- **Backend Swagger API Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
-## Advanced Query Parameters
+## 🚀 Production Deployment
 
-The `/tasks` list route supports dynamic parameters for search, custom sorting, pagination, and multi-field filtering:
+This project is configured for easy deployment using **Vercel** for the frontend and **Render** for the backend.
 
-| Parameter | Type | Description | Example |
-| --- | --- | --- | --- |
-| `page` | Integer | Page number (1-indexed) | `?page=2` |
-| `page_size` | Integer | Items per page (max 100) | `?page_size=20` |
-| `completed` | Boolean | Filter by completion state | `?completed=false` |
-| `priority` | String | Filter by task priority (`low`, `medium`, `high`, `critical`) | `?priority=high` |
-| `due_before` | Date | Filter tasks due on or before date | `?due_before=2026-06-30` |
-| `due_after` | Date | Filter tasks due on or after date | `?due_after=2026-06-01` |
-| `search` | String | Case-insensitive text search across title and description | `?search=refactor` |
-| `sort_by` | String | Field to sort by (`created_at`, `due_date`, `priority`, `title`) | `?sort_by=due_date` |
-| `order` | String | Sorting direction (`asc`, `desc`) | `?order=asc` |
+### 1. Backend (Render)
+This repository includes a `render.yaml` Blueprint. 
+1. Log into Render and click **New > Blueprint**.
+2. Connect this repository. Render will automatically detect the backend and host it as a web service.
+3. Grab your hosted Render URL.
 
----
-
-## Observability & Monitoring
-
-- **Prometheus Metrics**: Scraped by Prometheus agents at `GET /metrics`. Tracking latency, error spikes, and active processing count.
-- **OpenTelemetry Tracing**: Exposes span exports to trace collectors (Jaeger, Honeycomb, Datadog) via OTLP.
-- **Structured JSON Logs**: Machine-parseable logs formatted with context details (Correlation IDs, environment tags) to correlate system flows.
+### 2. Frontend (Vercel)
+1. Import this repository into Vercel.
+2. In the setup screen, set the **Root Directory** to `frontend`.
+3. Add an Environment Variable: 
+   - `NEXT_PUBLIC_API_URL` = `<your-render-backend-url>`
+4. Deploy!
 
 ---
 
-## Security Best Practices
+## 📊 Observability & Testing
 
-1. **JWT Rotation**: Single-use refresh tokens prevent session hijacking. Reusing a rotated refresh token triggers security detection that immediately revokes all sessions for the affected user.
-2. **Native Cryptography**: Direct utilization of `bcrypt` native libraries avoids obsolete wrappers.
-3. **Database Security**: Direct parameterized SQLAlchemy query compilation blocks SQL Injection attempts.
-4. **Endpoint Protection**: Redis-backed sliding-window rate limiters block brute force registration and credentials attacks.
+- **Testing suite**: The backend features over 95% test coverage tracking unit, integration, and End-to-End routes via `pytest`.
+- **Structured JSON Logs**: Machine-parseable logs formatted with context details.
+- **Metrics**: Exposed at `GET /metrics` for Prometheus scraping.
