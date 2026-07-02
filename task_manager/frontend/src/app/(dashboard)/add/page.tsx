@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { ArrowLeft, Calendar as CalendarIcon, Tag, Clock, Repeat, Mic, Check, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,7 +23,7 @@ declare global {
   }
 }
 
-export default function AddTask() {
+function AddTaskForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
@@ -304,5 +304,13 @@ export default function AddTask() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AddTask() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-muted-foreground min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>}>
+      <AddTaskForm />
+    </Suspense>
   );
 }
