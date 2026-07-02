@@ -1,0 +1,67 @@
+version: "3.8"
+
+services:
+  # ── API Application Service ─────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: taskmanager_api
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - DATABASE_URL=postgresql+asyncpg://taskmanager:taskmanager@postgres:5432/taskmanager
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET_KEY=TEST-PRODUCTION-JWT-SECRET-KEY-CHANGE-BEFORE-REAL-DEPLOYMENT
+      - LOG_LEVEL=INFO
+      - LOG_FORMAT=json
+      - ENABLE_METRICS=true
+      - ENABLE_TRACING=false
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: always
+
+  # ── PostgreSQL Production Database ─────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: taskmanager_db
+    environment:
+      - POSTGRES_USER=taskmanager
+      - POSTGRES_PASSWORD=taskmanager
+      - POSTGRES_DB=taskmanager
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taskmanager"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  # ── Redis Cache & Rate Limiting ──────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: taskmanager_cache
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
