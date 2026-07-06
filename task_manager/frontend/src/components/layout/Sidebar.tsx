@@ -27,17 +27,17 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 h-screen hidden md:flex flex-col border-r border-white/5 bg-background/50 backdrop-blur-xl relative z-40">
+    <aside className="w-64 h-screen hidden md:flex flex-col bg-black/20 backdrop-blur-xl border-r border-white/10 relative z-40">
       
       {/* Brand */}
-      <div className="h-20 flex items-center px-6 border-b border-white/5">
-        <h1 className="text-xl font-heading font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary uppercase tracking-widest">
+      <div className="h-20 flex items-center px-6">
+        <h1 className="text-2xl font-bold text-white tracking-tight">
           TaskFlow
         </h1>
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-1 px-4 py-8 space-y-2 overflow-y-auto custom-scrollbar">
+      <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto custom-scrollbar">
         {links.map((link) => {
           const isActive = pathname === link.href || (link.href !== "/dashboard" && link.href !== "/" && pathname.startsWith(link.href));
           const Icon = link.icon;
@@ -46,9 +46,9 @@ export function Sidebar() {
             return (
               <div key={link.href} className="pt-4 pb-2">
                 <Link href={link.href}>
-                  <div className="w-full h-12 bg-gradient-to-r from-primary to-secondary rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/20 text-white hover:shadow-primary/40 hover:-translate-y-0.5 transition-all">
+                  <div className="w-full h-12 bg-primary rounded-full flex items-center justify-center gap-2 text-white font-bold hover:scale-105 transition-transform hover:opacity-90 shadow-lg shadow-primary/25">
                     <Icon size={20} strokeWidth={2.5} />
-                    <span className="font-semibold text-sm tracking-wide">{link.label}</span>
+                    <span className="text-sm tracking-wide">{link.label}</span>
                   </div>
                 </Link>
               </div>
@@ -62,38 +62,28 @@ export function Sidebar() {
               className="block relative"
             >
               <div className={cn(
-                "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 relative z-10",
-                isActive ? "text-white" : "text-muted-foreground hover:text-white hover:bg-white/5"
+                "flex items-center gap-4 px-4 py-3 rounded-md transition-all duration-200 relative z-10",
+                isActive ? "text-white bg-white/10 shadow-inner" : "text-white/60 hover:text-white hover:bg-white/5"
               )}>
-                <Icon size={20} className={cn(isActive && "drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]")} />
-                <span className="text-sm font-medium tracking-wide">{link.label}</span>
+                <Icon size={24} strokeWidth={isActive ? 2.5 : 2} />
+                <span className={cn("text-sm tracking-wide", isActive ? "font-bold" : "font-medium")}>{link.label}</span>
               </div>
-              
-              {isActive && (
-                <motion.div
-                  layoutId="sidebar-indicator"
-                  className="absolute inset-0 bg-white/10 rounded-xl z-0 border border-white/10"
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                />
-              )}
             </Link>
           );
         })}
       </nav>
       
       {/* User profile brief */}
-      <div className="p-4 border-t border-white/5">
+      <div className="p-4 mt-auto mb-4">
         <div className="flex items-center gap-3 px-2">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-secondary p-0.5">
-             <div className="w-full h-full bg-background rounded-full flex items-center justify-center">
-                <User size={16} className="text-muted-foreground" />
-             </div>
+          <div className="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shadow-inner">
+            <User size={20} className="text-white/70" />
           </div>
-          <div>
-            <p className="text-sm font-medium text-white">
+          <div className="overflow-hidden">
+            <p className="text-sm font-bold text-white truncate">
               {mounted && user ? (user.full_name || user.username) : 'Loading...'}
             </p>
-            <p className="text-xs text-muted-foreground truncate max-w-[120px]">
+            <p className="text-xs text-white/50 truncate max-w-[120px]">
               {mounted && user ? user.email : '...'}
             </p>
           </div>

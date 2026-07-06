@@ -3,7 +3,7 @@ import { Sidebar } from "./Sidebar";
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="h-screen w-full flex overflow-hidden bg-background">
+    <div className="h-screen w-full flex overflow-hidden bg-transparent">
       
       {/* Desktop Sidebar */}
       <Sidebar />

@@ -49,92 +49,83 @@
 }
 
 :root {
-  /* Deep Black/Charcoal Background for Minimal Cyberpunk */
-  --background: oklch(0.12 0.0 0);
-  --foreground: oklch(0.98 0.0 0);
+  /* Vibrant Animated Dark Theme */
+  --background: #09090b;
+  --foreground: #ffffff;
   
-  /* Very Dark, sharp cards */
-  --card: oklch(0.14 0.0 0);
-  --card-foreground: oklch(0.98 0.0 0);
-  --popover: oklch(0.14 0.0 0);
-  --popover-foreground: oklch(0.98 0.0 0);
+  /* Glassmorphic cards */
+  --card: rgba(24, 24, 27, 0.5);
+  --card-foreground: #ffffff;
+  --popover: rgba(24, 24, 27, 0.95);
+  --popover-foreground: #ffffff;
   
-  /* Cyberpunk Yellow */
-  --primary: oklch(0.9 0.22 105);
-  --primary-foreground: oklch(0.1 0.0 0); /* Black text on yellow */
+  /* Vibrant Violet */
+  --primary: #8b5cf6;
+  --primary-foreground: #ffffff;
   
-  /* Electric Cyan */
-  --secondary: oklch(0.75 0.18 200);
-  --secondary-foreground: oklch(0.1 0.0 0);
+  --secondary: rgba(255, 255, 255, 0.05);
+  --secondary-foreground: #ffffff;
   
-  --muted: oklch(0.18 0.0 0);
-  --muted-foreground: oklch(0.6 0.0 0);
+  --muted: rgba(255, 255, 255, 0.05);
+  --muted-foreground: #a1a1aa;
   
-  /* Neon Pink */
-  --accent: oklch(0.65 0.28 330);
-  --accent-foreground: oklch(0.98 0.0 0);
+  --accent: rgba(139, 92, 246, 0.2);
+  --accent-foreground: #ffffff;
   
-  --destructive: oklch(0.6 0.25 15);
-  --border: oklch(1 0 0 / 10%); /* Very subtle borders, we rely on neon shadows */
-  --input: oklch(1 0 0 / 10%);
-  --ring: oklch(0.9 0.22 105); /* Yellow focus ring */
-  --radius: 0.25rem; /* Sharper edges for minimal cyberpunk */
+  --destructive: #ef4444;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.05);
+  --ring: #8b5cf6;
+  --radius: 1rem;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  @keyframes gradient-bg {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
   body {
-    @apply bg-background text-foreground selection:bg-accent/40;
-    /* Spider-Verse Halftone Pattern overlay on body */
-    background-image: 
-      radial-gradient(oklch(1 0 0 / 5%) 2px, transparent 2px),
-      radial-gradient(oklch(0.55 0.25 25 / 10%) 2px, transparent 2px);
-    background-size: 16px 16px, 20px 20px;
-    background-position: 0 0, 8px 8px;
-    background-attachment: fixed;
+    @apply text-foreground selection:bg-primary/40;
+    background: linear-gradient(-45deg, #09090b, #171033, #081121, #130a1c);
+    background-size: 400% 400%;
+    animation: gradient-bg 15s ease infinite;
+    min-height: 100vh;
   }
   html {
     @apply font-sans antialiased;
   }
   
-  /* Typography overwrites for headings */
+  /* Clean typography overwrites for headings */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading tracking-tight uppercase;
-    text-shadow: 2px 2px 0px oklch(0.55 0.25 25), -2px -2px 0px oklch(0.75 0.15 200);
+    @apply font-bold tracking-tight;
   }
 }
 
-/* Custom Utilities for Spider-Verse Theme */
+/* Custom Utilities for Spotify Theme */
 @layer utilities {
   .glass-dark {
-    @apply bg-black/60 backdrop-blur-md border-[2px] border-white/20 shadow-[8px_8px_0px_0px_oklch(0.55_0.25_25)];
+    @apply bg-black/40 backdrop-blur-2xl border border-white/10;
   }
   .glass {
-    @apply bg-white/10 backdrop-blur-md border-[2px] border-white/20 shadow-[8px_8px_0px_0px_oklch(0.75_0.15_200)];
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300;
   }
   
   .glitch-hover {
-    transition: transform 0.1s ease-in-out;
+    transition: transform 0.2s ease;
   }
   .glitch-hover:hover {
-    transform: skew(-2deg) translate(2px, -2px);
-    box-shadow: -4px 4px 0px oklch(0.75 0.15 200), 4px -4px 0px oklch(0.6 0.28 330);
+    transform: scale(1.02);
   }
   
   .bg-animated-gradient {
-    background: linear-gradient(-45deg, oklch(0.12 0.05 280), oklch(0.55 0.25 25 / 40%), oklch(0.12 0.05 280), oklch(0.75 0.15 200 / 30%));
-    background-size: 400% 400%;
-    animation: gradientBG 10s ease infinite;
+    @apply bg-card;
   }
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent;
+    @apply text-white;
   }
-}
-
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
 }
